@@ -1,6 +1,7 @@
 import React from "react";
 
 import Button from "../Button";
+import Toast from "../Toast/";
 
 import styles from "./ToastPlayground.module.css";
 
@@ -9,13 +10,24 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState("notice");
+  const [isHidden, setIsHidden] = React.useState(true);
+
+  function createToast(event) {
+    event.preventDefault();
+
+    setIsHidden(false);
+  }
 
   return (
-    <form className={styles.wrapper}>
+    <form className={styles.wrapper} onSubmit={createToast}>
       <header>
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
+
+      <Toast variant={variant} isHidden={isHidden} setIsHidden={setIsHidden}>
+        {message}
+      </Toast>
 
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
@@ -23,13 +35,17 @@ function ToastPlayground() {
             htmlFor="message"
             className={styles.label}
             style={{ alignSelf: "baseline" }}
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
           >
             Message
           </label>
           <div className={styles.inputWrapper}>
-            <textarea id="message" className={styles.messageInput} required />
+            <textarea
+              id="message"
+              className={styles.messageInput}
+              required
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+            />
           </div>
         </div>
 
