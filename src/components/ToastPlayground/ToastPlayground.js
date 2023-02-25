@@ -12,7 +12,7 @@ function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState("notice");
 
-  const { createToast } = React.useContext(ToastContext);
+  const { createToast, deleteAllToasts } = React.useContext(ToastContext);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -28,6 +28,20 @@ function ToastPlayground() {
     setMessage("");
     setVariant("notice");
   }
+
+  React.useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.code === "Escape") {
+        deleteAllToasts();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [deleteAllToasts]);
 
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit}>
