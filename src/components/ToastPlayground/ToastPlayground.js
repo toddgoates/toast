@@ -1,6 +1,7 @@
 import React from "react";
 
 import Button from "../Button";
+import { ToastContext } from "../ToastProvider";
 import ToastShelf from "../ToastShelf/ToastShelf";
 
 import styles from "./ToastPlayground.module.css";
@@ -8,46 +9,34 @@ import styles from "./ToastPlayground.module.css";
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
-  const [toasts, setToasts] = React.useState([]);
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState("notice");
 
-  function createToast(event) {
+  const { createToast } = React.useContext(ToastContext);
+
+  function handleSubmit(event) {
     event.preventDefault();
 
-    setToasts([
-      ...toasts,
-      {
-        id: crypto.randomUUID(),
-        message,
-        variant,
-        isVisible: true,
-      },
-    ]);
+    const newToastObject = {
+      id: crypto.randomUUID(),
+      message,
+      variant,
+    };
+
+    createToast(newToastObject);
 
     setMessage("");
     setVariant("notice");
   }
 
-  function deleteToast(id) {
-    const toastIndex = toasts.findIndex((toast) => {
-      return toast.id === id;
-    });
-
-    const newToasts = [...toasts];
-    newToasts.splice(toastIndex, 1);
-
-    setToasts(newToasts);
-  }
-
   return (
-    <form className={styles.wrapper} onSubmit={createToast}>
+    <form className={styles.wrapper} onSubmit={handleSubmit}>
       <header>
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
 
-      <ToastShelf toasts={toasts} deleteToast={deleteToast} />
+      <ToastShelf />
 
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
